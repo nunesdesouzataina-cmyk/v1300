@@ -12,7 +12,7 @@ import uuid
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Any, Optional, Callable, List
 from flask import Blueprint, request, jsonify
 from concurrent.futures import ThreadPoolExecutor
 
@@ -22,14 +22,12 @@ from services import (
     real_search_orchestrator,
     viral_content_analyzer,
     enhanced_synthesis_engine,
-    predictive_analytics_engine,
     enhanced_module_processor,
     comprehensive_report_generator_v3,
     auto_save_manager,
-    progress_tracker_enhanced,
-    context_intelligence_engine,
-    content_quality_validator
+    progress_tracker_enhanced
 )
+from services.predictive_analytics_service import predictive_analytics_service as predictive_analytics_engine
 
 logger = logging.getLogger(__name__)
 analysis_bp = Blueprint('analysis', __name__)
@@ -62,7 +60,7 @@ class UltraRobustAnalysisManager:
             'predicoes_futuro': {'priority': 12, 'required': True, 'description': 'Predições baseadas em dados'},
             'provas_visuais': {'priority': 13, 'required': True, 'description': 'Evidências visuais'},
             'anti_objecao': {'priority': 14, 'required': True, 'description': 'Sistema anti-objeção'},
-            'pre_pitch': {'priority: 15, 'required': True, 'description': 'Pré-pitch estratégico'},
+            'pre_pitch': {'priority': 15, 'required': True, 'description': 'Pré-pitch estratégico'},
             'reports': {'priority': 16, 'required': True, 'description': 'Relatórios finais'},
             'users': {'priority': 17, 'required': False, 'description': 'Dados de usuários'},
             'files': {'priority': 18, 'required': False, 'description': 'Arquivos auxiliares'},

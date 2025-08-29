@@ -138,32 +138,48 @@ class ViralContentAnalyzer:
             try:
                 query = search_results.get('query', 'viral content')
                 logger.info(f"🎭 Usando extrator Playwright para '{query}'")
-                
+
                 async with playwright_social_extractor as extractor:
                     playwright_results = await extractor.extract_viral_content(
-                        query, 
-                        platforms=['instagram', 'facebook', 'youtube', 'tiktok'],
+                        query,
+                        platforms=['instagram', 'facebook', 'youtube', 'tiktok', 'twitter'],
                         max_items=max_captures
                     )
-                    
+
                     if playwright_results and playwright_results.get('viral_content'):
                         analysis_results['viral_content_identified'] = playwright_results['viral_content']
                         analysis_results['platform_analysis'] = playwright_results['platforms_data']
-                        
-                        # Captura screenshots se necessário
+
+                        # Captura screenshots das imagens virais
                         urls_for_screenshots = []
-                        for content in playwright_results['viral_content'][:10]:  # Máximo 10 screenshots
+                        for content in playwright_results['viral_content'][:15]:  # Máximo 15 screenshots
                             if content.get('image_url'):
                                 urls_for_screenshots.append(content['image_url'])
                             elif content.get('thumbnail_url'):
                                 urls_for_screenshots.append(content['thumbnail_url'])
-                        
+
+                        # Captura screenshots dos posts virais
                         if urls_for_screenshots:
                             screenshots = await extractor.capture_screenshots(urls_for_screenshots, session_id)
-                            analysis_results['screenshots_captured'] = screenshots
-                        
-                        logger.info(f"✅ Playwright extraiu {len(playwright_results['viral_content'])} itens")
-                        
+                            analysis_results['screenshots'] = screenshots
+                            logger.info(f"📸 {len(screenshots)} screenshots de imagens virais capturados")
+
+                        # Atualiza estatísticas
+                        analysis_results['viral_posts'] = playwright_results['viral_content']
+                        analysis_results['total_viral_identified'] = len(playwright_results['viral_content'])
+                        analysis_results['screenshots_captured'] = len(analysis_results.get('screenshots', []))
+
+                        logger.info(f"✅ Playwright: {analysis_results['total_viral_identified']} posts virais, {analysis_results['screenshots_captured']} screenshots")
+
+                        return analysis_results
+
+                        # O código abaixo parece redundante com o return acima. Removi para evitar confusão.
+                        # if urls_for_screenshots:
+                        #     screenshots = await extractor.capture_screenshots(urls_for_screenshots, session_id)
+                        #     analysis_results['screenshots_captured'] = screenshots
+
+                        # logger.info(f"✅ Playwright extraiu {len(playwright_results['viral_content'])} itens")
+
             except Exception as e:
                 logger.error(f"❌ Erro no extrator Playwright: {e}")
                 # Fallback para extrator híbrido
@@ -171,32 +187,32 @@ class ViralContentAnalyzer:
                     logger.info("🔄 Usando fallback: extrator híbrido")
                     try:
                         hybrid_results = await hybrid_extractor.extract_viral_content(
-                            query, 
+                            query,
                             ['instagram', 'youtube', 'facebook']
                         )
-                        
+
                         # Integrar resultados do extrator híbrido
                         if hybrid_results and hybrid_results.get('viral_content'):
                             analysis_results['viral_content_identified'] = hybrid_results['viral_content']
                             logger.info(f"✅ Fallback híbrido extraiu {len(hybrid_results['viral_content'])} itens")
                     except Exception as hybrid_e:
                         logger.error(f"❌ Erro no fallback híbrido: {hybrid_e}")
-        
+
         # Fallback final: usar extrator híbrido se Playwright não disponível
         elif HAS_HYBRID_EXTRACTOR:
             try:
                 query = search_results.get('query', 'viral content')
                 logger.info(f"🎯 Usando extrator híbrido para '{query}'")
-                
+
                 hybrid_results = await hybrid_extractor.extract_viral_content(
-                    query, 
+                    query,
                     ['instagram', 'youtube', 'facebook']
                 )
-                
+
                 if hybrid_results and hybrid_results.get('total_content', 0) > 0:
                     analysis_results['hybrid_extraction'] = hybrid_results
                     analysis_results['extraction_method'] = hybrid_results.get('extraction_method', 'hybrid')
-                    
+
                     # Converter para formato esperado
                     for platform, data in hybrid_results.get('platforms', {}).items():
                         if 'posts' in data:
@@ -204,9 +220,9 @@ class ViralContentAnalyzer:
                                 post['platform'] = platform
                                 post['viral_score'] = post.get('conversion_score', 0.5)
                                 analysis_results['viral_content_identified'].append(post)
-                    
+
                     logger.info(f"✅ Extrator híbrido: {len(analysis_results['viral_content_identified'])} posts")
-                
+
             except Exception as e:
                 logger.error(f"❌ Erro no extrator híbrido: {e}")
                 # Continuar com método tradicional
@@ -222,6 +238,51 @@ class ViralContentAnalyzer:
                 content_list = search_results.get(platform_results, [])
                 all_content.extend(content_list)
 
+            # Processa resultados sociais existentes - CORRIGIDO
+            social_results = search_results.get("social_results", {})
+            if social_results and isinstance(social_results, dict):
+                # Verifica múltiplos formatos possíveis
+                platforms_data = None
+
+                # Formato 1: all_platforms_data.platforms
+                if social_results.get("all_platforms_data"):
+                    platforms_data = social_results["all_platforms_data"].get("platforms")
+
+                # Formato 2: platforms direto
+                elif social_results.get("platforms"):
+                    platforms_data = social_results["platforms"]
+
+                # Formato 3: results direto
+                elif social_results.get("results"):
+                    all_content.extend(social_results["results"])
+
+                if platforms_data:
+                    # Verifica se platforms_data é um dict ou list
+                    if isinstance(platforms_data, dict):
+                        # Se é dict, itera pelos items
+                        for platform, data in platforms_data.items():
+                            if isinstance(data, dict) and "results" in data:
+                                all_content.extend(data["results"])
+                            elif isinstance(data, list):
+                                all_content.extend(data)
+                    elif isinstance(platforms_data, list):
+                        # Se é list, itera diretamente
+                        for platform_data in platforms_data:
+                            if isinstance(platform_data, dict):
+                                if "results" in platform_data:
+                                    all_content.extend(platform_data["results"])
+                                elif "data" in platform_data and isinstance(platform_data["data"], dict):
+                                    # Se o item da lista tem estrutura diferente
+                                    platform_results = platform_data["data"].get("results", [])
+                                    all_content.extend(platform_results)
+                                else:
+                                    # Se o próprio item é um resultado
+                                    all_content.append(platform_data)
+            elif isinstance(social_results, list):
+                # Se social_results é uma lista direta
+                all_content.extend(social_results)
+
+
             # Analisa viralidade
             viral_content = self._identify_viral_content(all_content)
             analysis_results['viral_content_identified'] = viral_content
@@ -234,38 +295,23 @@ class ViralContentAnalyzer:
             # FASE 3: Captura de Screenshots
             logger.info("📸 FASE 3: Capturando screenshots do conteúdo viral")
 
-            if HAS_SELENIUM and viral_content:
-                try:
-                    # Seleciona top performers para screenshot
-                    top_content = sorted(
-                        viral_content,
-                        key=lambda x: x.get('viral_score', 0),
-                        reverse=True
-                    )[:max_captures]
-
-                    screenshots = await self._capture_viral_screenshots(top_content, session_id)
-                    analysis_results['screenshots_captured'] = screenshots
-                except Exception as e:
-                    logger.warning(f"⚠️ Screenshots não disponíveis: {e}")
-                    # Continua sem screenshots - não é crítico
-                    analysis_results['screenshots_captured'] = [] # Garante que seja uma lista vazia em caso de erro
-            else:
-                logger.warning("⚠️ Selenium não disponível ou nenhum conteúdo viral encontrado - screenshots desabilitados")
-                analysis_results['screenshots_captured'] = [] # Garante que seja uma lista vazia
+            # Usa Playwright em vez de Selenium
+            screenshots = await self._capture_viral_screenshots(viral_content, session_id)
+            analysis_results['screenshots_captured'] = screenshots
 
             # FASE 4: Extração de Imagens Virais
             logger.info("🖼️ FASE 4: Extraindo imagens virais das redes sociais")
-            
+
             viral_images = []
             if HAS_VIRAL_IMAGE_EXTRACTOR:
                 try:
                     # Extrai query da sessão ou usa um padrão
                     query = self._extract_query_from_content(viral_content) or "tecnologia inovação digital"
-                    
+
                     # Extrai imagens virais REAIS
                     async with real_viral_extractor as extractor:
                         viral_images = await extractor.extract_real_viral_images(query, session_id, min_images=20)
-                    
+
                     analysis_results['viral_images'] = [
                         {
                             'platform': img.platform,
@@ -276,9 +322,9 @@ class ViralContentAnalyzer:
                             'metadata': img.metadata
                         } for img in viral_images
                     ]
-                    
+
                     logger.info(f"✅ {len(viral_images)} imagens virais REAIS extraídas")
-                    
+
                 except Exception as e:
                     logger.error(f"❌ Erro na extração de imagens virais REAIS: {e}")
                     analysis_results['viral_images'] = []
@@ -438,186 +484,131 @@ class ViralContentAnalyzer:
         viral_content: List[Dict[str, Any]],
         session_id: str
     ) -> List[Dict[str, Any]]:
-        """Captura screenshots do conteúdo viral"""
-
-        if not HAS_SELENIUM:
-            logger.warning("⚠️ Selenium não disponível para screenshots")
-            return []
+        """Captura screenshots do conteúdo viral usando Playwright"""
 
         screenshots = []
-        driver = None
+        browser = None
+        context = None
+        page = None
 
         try:
-            # Configura Chrome headless para Replit
-            chrome_options = Options()
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("--disable-web-security")
-            chrome_options.add_argument("--disable-features=VizDisplayCompositor")
-            chrome_options.add_argument("--remote-debugging-port=9222")
-            chrome_options.add_argument("--disable-extensions")
-            chrome_options.add_argument("--disable-plugins")
-            chrome_options.add_argument(f"--window-size={self.screenshot_config['width']},{self.screenshot_config['height']}")
-            chrome_options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36")
+            # Inicializa Playwright
+            from playwright.async_api import async_playwright
 
-            # Usa Chrome do sistema Nix diretamente
-            try:
-                from .selenium_checker import SeleniumChecker
-                checker = SeleniumChecker()
-                check_results = checker.full_check()
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(
+                    headless=True,
+                    args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"]
+                )
+                context = await browser.new_context(
+                    viewport={"width": self.screenshot_config['width'], "height": self.screenshot_config['height']},
+                    user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                )
+                page = await context.new_page()
+                logger.info("✅ Playwright iniciado")
 
-                if not check_results['selenium_ready']:
-                    logger.warning("⚠️ Selenium não está pronto - screenshots desabilitados")
-                    return []
+                screenshots_dir = Path(f"analyses_data/files/{session_id}")
+                screenshots_dir.mkdir(parents=True, exist_ok=True)
 
-                best_chrome_path = check_results.get('best_chrome_path')
-                if best_chrome_path:
-                    chrome_options.binary_location = best_chrome_path
-                    logger.info(f"✅ Chrome configurado: {best_chrome_path}")
-                else:
-                    logger.warning("⚠️ Chrome não encontrado - screenshots desabilitados")
-                    return []
-
-                try:
-                    service = Service(ChromeDriverManager().install())
-                    driver = webdriver.Chrome(service=service, options=chrome_options)
-                    logger.info("✅ ChromeDriverManager funcionou")
-                except Exception as e:
-                    logger.warning(f"⚠️ ChromeDriverManager falhou: {e}, tentando usar chromedriver do sistema")
+                for i, content in enumerate(viral_content, 1):
                     try:
-                        driver = webdriver.Chrome(options=chrome_options)
-                        logger.info("✅ Chromedriver do sistema funcionou")
-                    except WebDriverException as sys_driver_e:
-                        logger.error(f"❌ Falha ao iniciar Chrome com chromedriver do sistema: {sys_driver_e}. Certifique-se de que o chromedriver esteja no PATH ou especificado.")
-                        return []
+                        url = content.get('url', '')
+                        platform = content.get('platform', 'web')
 
-            except Exception as e:
-                logger.error(f"❌ Falha total na configuração do Chrome: {e}")
-                return []
+                        if not url or not url.startswith(('http://', 'https://')):
+                            logger.warning(f"Skipping invalid URL: {url}")
+                            continue
 
-            screenshots_dir = Path(f"analyses_data/files/{session_id}")
-            screenshots_dir.mkdir(parents=True, exist_ok=True)
+                        logger.info(f"📸 Capturando screenshot {i}/{len(viral_content)}: {content.get('title', 'Sem título')}")
 
-            for i, content in enumerate(viral_content, 1):
-                try:
-                    url = content.get('url', '')
-                    platform = content.get('platform', 'web')
+                        await page.goto(url, wait_until="domcontentloaded", timeout=60000) # Aumenta o timeout
 
-                    if not url or not url.startswith(('http://', 'https://')):
-                        logger.warning(f"Skipping invalid URL: {url}")
-                        continue
+                        # Adiciona lógica específica para Instagram/Facebook
+                        if platform == 'instagram':
+                            # Tenta fechar pop-up de login se existir
+                            try:
+                                await page.locator("//button[text()='Agora não']").click(timeout=5000)
+                                logger.info("Fechou pop-up de login do Instagram")
+                            except Exception:
+                                pass # Pop-up não apareceu ou já foi fechado
 
-                    logger.info(f"📸 Capturando screenshot {i}/{len(viral_content)}: {content.get('title', 'Sem título')}")
+                            # Espera por elementos de post (ex: imagem principal ou vídeo)
+                            try:
+                                await page.locator("//img[contains(@srcset, 's150x150')] | //video").wait_for(timeout=10000)
+                            except Exception:
+                                logger.warning(f"Não encontrou elementos de post no Instagram para {url}")
 
-                    driver.get(url)
+                        elif platform == 'facebook':
+                            # Tenta fechar pop-up de cookies/login
+                            try:
+                                await page.locator("//div[@aria-label='Aceitar todos os cookies'] | //a[@data-testid='login_button']").click(timeout=5000)
+                                logger.info("Fechou pop-up de cookies/login do Facebook")
+                            except Exception:
+                                pass
+                            # Espera por elementos de post (ex: post feed)
+                            try:
+                                await page.locator("//div[@role='feed'] | //div[@data-pagelet='ProfileCometPostCollection']").wait_for(timeout=10000)
+                            except Exception:
+                                logger.warning(f"Não encontrou elementos de post no Facebook para {url}")
 
-                    # Adiciona lógica específica para Instagram/Facebook
-                    if platform == 'instagram':
-                        # Tenta fechar pop-up de login se existir
-                        try:
-                            WebDriverWait(driver, 5).until(
-                                EC.presence_of_element_located((By.XPATH, "//button[text()='Agora não']"))
-                            ).click()
-                            logger.info("Fechou pop-up de login do Instagram")
-                        except TimeoutException:
-                            pass # Pop-up não apareceu ou já foi fechado
-                        except Exception as e:
-                            logger.warning(f"Erro ao tentar fechar pop-up do Instagram: {e}")
+                        # Aguarda carregamento geral e scroll para carregar conteúdo lazy-loaded
+                        await page.evaluate("window.scrollTo(0, document.body.scrollHeight/2);")
+                        await asyncio.sleep(self.screenshot_config['scroll_pause'])
+                        await page.evaluate("window.scrollTo(0, 0);")
+                        await asyncio.sleep(1)
 
-                        # Espera por elementos de post (ex: imagem principal ou vídeo)
-                        try:
-                            WebDriverWait(driver, 10).until(
-                                EC.presence_of_element_located((By.XPATH, "//img[contains(@srcset, 's150x150')] | //video"))
-                            )
-                        except TimeoutException:
-                            logger.warning(f"Não encontrou elementos de post no Instagram para {url}")
+                        page_title = await page.title() or content.get('title', 'Sem título')
+                        current_url = page.url
 
-                    elif platform == 'facebook':
-                        # Tenta fechar pop-up de cookies/login
-                        try:
-                            WebDriverWait(driver, 5).until(
-                                EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Aceitar todos os cookies'] | //a[@data-testid='login_button']"))
-                            ).click()
-                            logger.info("Fechou pop-up de cookies/login do Facebook")
-                        except TimeoutException:
-                            pass
-                        except Exception as e:
-                            logger.warning(f"Erro ao tentar fechar pop-up do Facebook: {e}")
+                        filename = f"screenshot_{platform}_{i:03d}"
+                        screenshot_path = screenshots_dir / f"{filename}.png"
 
-                        # Espera por elementos de post (ex: post feed)
-                        try:
-                            WebDriverWait(driver, 10).until(
-                                EC.presence_of_element_located((By.XPATH, "//div[@role='feed'] | //div[@data-pagelet='ProfileCometPostCollection']"))
-                            )
-                        except TimeoutException:
-                            logger.warning(f"Não encontrou elementos de post no Facebook para {url}")
+                        await page.screenshot(path=str(screenshot_path), full_page=True)
 
-                    # Aguarda carregamento geral
-                    WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.TAG_NAME, "body"))
-                    )
+                        if screenshot_path.exists() and screenshot_path.stat().st_size > 0:
+                            logger.info(f"✅ Screenshot salvo: {screenshot_path}")
+                            screenshots.append({
+                                'success': True,
+                                'url': url,
+                                'final_url': current_url,
+                                'title': page_title,
+                                'platform': platform,
+                                'viral_score': content.get('viral_score', 0),
+                                'filename': f"{filename}.png",
+                                'filepath': str(screenshot_path),
+                                'relative_path': str(screenshot_path.relative_to(Path('analyses_data'))),
+                                'filesize': screenshot_path.stat().st_size,
+                                'timestamp': datetime.now().isoformat(),
+                                'content_metrics': {
+                                    'likes': content.get('likes', 0),
+                                    'comments': content.get('comments', 0),
+                                    'shares': content.get('shares', 0),
+                                    'views': content.get('view_count', 0) # Para YouTube/TikTok
+                                }
+                            })
+                        else:
+                            raise Exception("Screenshot não foi criado ou está vazio")
 
-                    await asyncio.sleep(self.screenshot_config['wait_time'])
-
-                    # Scroll para carregar conteúdo lazy-loaded
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-                    await asyncio.sleep(self.screenshot_config['scroll_pause'])
-                    driver.execute_script("window.scrollTo(0, 0);")
-                    await asyncio.sleep(1)
-
-                    page_title = driver.title or content.get('title', 'Sem título')
-                    current_url = driver.current_url
-
-                    filename = f"screenshot_{platform}_{i:03d}"
-                    screenshot_path = screenshots_dir / f"{filename}.png"
-
-                    driver.save_screenshot(str(screenshot_path))
-
-                    if screenshot_path.exists() and screenshot_path.stat().st_size > 0:
-                        logger.info(f"✅ Screenshot salvo: {screenshot_path}")
+                    except Exception as e:
+                        logger.error(f"❌ Erro ao capturar screenshot de {url}: {e}")
                         screenshots.append({
-                            'success': True,
+                            'success': False,
                             'url': url,
-                            'final_url': current_url,
-                            'title': page_title,
-                            'platform': platform,
-                            'viral_score': content.get('viral_score', 0),
-                            'filename': f"{filename}.png",
-                            'filepath': str(screenshot_path),
-                            'relative_path': str(screenshot_path.relative_to(Path('analyses_data'))),
-                            'filesize': screenshot_path.stat().st_size,
-                            'timestamp': datetime.now().isoformat(),
-                            'content_metrics': {
-                                'likes': content.get('likes', 0),
-                                'comments': content.get('comments', 0),
-                                'shares': content.get('shares', 0),
-                                'views': content.get('view_count', 0) # Para YouTube/TikTok
-                            }
+                            'error': str(e),
+                            'timestamp': datetime.now().isoformat()
                         })
-                    else:
-                        raise Exception("Screenshot não foi criado ou está vazio")
-
-                except Exception as e:
-                    logger.error(f"❌ Erro ao capturar screenshot de {url}: {e}")
-                    screenshots.append({
-                        'success': False,
-                        'url': url,
-                        'error': str(e),
-                        'timestamp': datetime.now().isoformat()
-                    })
 
         except Exception as e:
-            logger.error(f"❌ Erro crítico na captura de screenshots: {e}")
+            logger.error(f"❌ Erro crítico na captura de screenshots com Playwright: {e}")
         finally:
-            if driver:
+            if browser:
                 try:
-                    driver.quit()
-                    logger.info("✅ Chrome driver fechado")
+                    await browser.close()
+                    logger.info("✅ Playwright browser fechado")
                 except Exception as e:
-                    logger.error(f"❌ Erro ao fechar driver: {e}")
+                    logger.error(f"❌ Erro ao fechar Playwright browser: {e}")
         return screenshots
+
 
     def _calculate_viral_metrics(self, viral_content: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Calcula métricas gerais de viralidade"""
@@ -799,7 +790,7 @@ class ViralContentAnalyzer:
         report += f"\n---\n\n*Relatório gerado automaticamente em {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}*"
 
         return report
-    
+
     def _extract_query_from_content(self, viral_content: List[Dict[str, Any]]) -> Optional[str]:
         """
         Extrai query relevante do conteúdo viral para busca de imagens
@@ -807,76 +798,76 @@ class ViralContentAnalyzer:
         try:
             if not viral_content:
                 return None
-            
+
             # Coleta palavras-chave dos títulos e descrições
             keywords = []
-            
+
             for content in viral_content[:5]:  # Analisa top 5 conteúdos
                 title = content.get('title', '')
                 description = content.get('description', '')
-                
+
                 # Extrai palavras relevantes
                 text = f"{title} {description}".lower()
                 words = text.split()
-                
+
                 # Filtra palavras relevantes (mais de 3 caracteres, não stopwords)
                 stopwords = {'que', 'para', 'com', 'uma', 'por', 'mais', 'como', 'seu', 'sua', 'dos', 'das', 'the', 'and', 'for', 'with', 'this', 'that'}
                 relevant_words = [word for word in words if len(word) > 3 and word not in stopwords]
-                
+
                 keywords.extend(relevant_words[:3])  # Top 3 palavras por conteúdo
-            
+
             # Conta frequência das palavras
             word_count = {}
             for word in keywords:
                 word_count[word] = word_count.get(word, 0) + 1
-            
+
             # Seleciona as 3 palavras mais frequentes
             top_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True)[:3]
-            
+
             if top_words:
                 query = ' '.join([word for word, count in top_words])
                 return query
-            
+
         except Exception as e:
             logger.warning(f"⚠️ Erro ao extrair query do conteúdo: {e}")
-        
+
         return None
 
     async def _expand_data_to_target_size(self, analysis_results: Dict[str, Any], target_size_kb: int):
         """Expande os dados para atingir o tamanho alvo de 500KB+"""
         try:
             logger.info(f"📈 Expandindo dados para atingir {target_size_kb} KB")
-            
+
             # Calcula tamanho atual
             current_json = json.dumps(analysis_results, ensure_ascii=False)
             current_size_kb = len(current_json.encode('utf-8')) / 1024
-            
+
             if current_size_kb >= target_size_kb:
                 logger.info(f"✅ Tamanho já atingido: {current_size_kb:.2f} KB")
                 return
-            
+
             # Gera dados detalhados adicionais
             analysis_results['detailed_content_data'] = await self._generate_detailed_content_data()
             analysis_results['extended_metadata'] = await self._generate_extended_metadata()
             analysis_results['comprehensive_analysis'] = await self._generate_comprehensive_analysis()
-            
+
             # Adiciona dados de preenchimento se necessário
             new_json = json.dumps(analysis_results, ensure_ascii=False)
             new_size_kb = len(new_json.encode('utf-8')) / 1024
-            
+
             if new_size_kb < target_size_kb:
                 padding_needed = target_size_kb - new_size_kb
                 analysis_results['data_padding'] = await self._generate_data_padding(padding_needed)
-            
+
             logger.info(f"✅ Dados expandidos para {new_size_kb:.2f} KB")
-            
+
         except Exception as e:
             logger.error(f"❌ Erro ao expandir dados: {e}")
 
     async def _generate_detailed_content_data(self) -> List[Dict[str, Any]]:
         """Gera dados detalhados de conteúdo"""
         detailed_data = []
-        
+
         for i in range(100):  # 100 entradas detalhadas
             detailed_data.append({
                 'content_id': f"content_{i+1:03d}",
@@ -924,7 +915,7 @@ class ViralContentAnalyzer:
                     'top_locations': [f"City_{j}" for j in range(i % 5 + 3)]
                 }
             })
-        
+
         return detailed_data
 
     async def _generate_extended_metadata(self) -> Dict[str, Any]:
@@ -1055,10 +1046,10 @@ class ViralContentAnalyzer:
             'extended_analysis': {},
             'supplementary_data': []
         }
-        
+
         # Calcula quantos dados precisamos gerar
         target_chars = int(padding_kb * 1024)  # Aproximadamente 1 byte por char
-        
+
         # Gera métricas adicionais
         for i in range(min(500, target_chars // 100)):
             padding_data['additional_metrics'][f'metric_{i}'] = {
@@ -1068,7 +1059,7 @@ class ViralContentAnalyzer:
                 'subcategory': f"sub_{i % 20}",
                 'description': f"Detailed metric description for item {i} with additional context and explanatory text to increase data size"
             }
-        
+
         # Gera análise estendida
         for i in range(min(200, target_chars // 200)):
             padding_data['extended_analysis'][f'analysis_{i}'] = {
@@ -1078,7 +1069,7 @@ class ViralContentAnalyzer:
                 'methodology': f"Advanced analytical methodology {i} with detailed explanation of processes and procedures",
                 'findings': f"Comprehensive findings from analysis {i} including detailed observations and insights"
             }
-        
+
         # Gera dados suplementares
         for i in range(min(300, target_chars // 150)):
             padding_data['supplementary_data'].append({
@@ -1091,10 +1082,8 @@ class ViralContentAnalyzer:
                     'relevance': round((i * 0.015 + 0.6), 2)
                 }
             })
-        
+
         return padding_data
 
 # Instância global
 viral_content_analyzer = ViralContentAnalyzer()
-
-

@@ -57,6 +57,10 @@ echo 🔄 Instalando dependências ULTRA-ROBUSTAS...
 echo Isso pode levar alguns minutos...
 echo.
 pip install -r requirements.txt
+pip install flask scrapy playwright
+pip install -r requirements_document_analysis.txt
+playwright install
+
 if errorlevel 1 (
     echo ❌ ERRO: Falha ao instalar dependências!
     echo Verifique sua conexão com a internet e tente novamente.

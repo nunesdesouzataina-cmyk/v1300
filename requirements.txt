@@ -148,3 +148,4 @@ pydantic>=2.0.0
 chromedriver==2.24.1
 
 
+playwright

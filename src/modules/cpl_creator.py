@@ -1,3 +1,4 @@
+
 """
 Protocolo Integrado de Criação de CPLs Devastadores - V3.0
 Implementação completa das 5 fases do protocolo CPL
@@ -92,16 +93,16 @@ class CPLDevastadorProtocol:
         4. 2 tendências REAIS que estão mudando o mercado
         5. 3 casos de sucesso RECENTES (últimos 6 meses)
         
-        Formato JSON: {{\"termos_chave\": [], \"frases_busca\": [], \"objecoes\": [], \"tendencias\": [], \"casos_sucesso\": []}}
+        Formato JSON: {{"termos_chave": [], "frases_busca": [], "objecoes": [], "tendencias": [], "casos_sucesso": []}}
         
         IMPORTANTE: Use apenas dados REAIS e ESPECÍFICOS. Nada genérico ou simulado.
         """
         
         try:
             # Usar API principal (Qwen) ou fallback (Gemini)
-            api = self.api_manager.get_active_api(\'qwen\')
+            api = self.api_manager.get_active_api('qwen')
             if not api:
-                _, api = self.api_manager.get_fallback_model(\'qwen\')
+                _, api = self.api_manager.get_fallback_model('qwen')
             
             if not api:
                 raise Exception("Nenhuma API disponível para geração de contexto")
@@ -114,11 +115,11 @@ class CPLDevastadorProtocol:
                 tema=tema,
                 segmento=segmento,
                 publico_alvo=publico_alvo,
-                termos_chave=contexto_data.get(\'termos_chave\', []),
-                frases_busca=contexto_data.get(\'frases_busca\', []),
-                objecoes=contexto_data.get(\'objecoes\', []),
-                tendencias=contexto_data.get(\'tendencias\', []),
-                casos_sucesso=contexto_data.get(\'casos_sucesso\', [])
+                termos_chave=contexto_data.get('termos_chave', []),
+                frases_busca=contexto_data.get('frases_busca', []),
+                objecoes=contexto_data.get('objecoes', []),
+                tendencias=contexto_data.get('tendencias', []),
+                casos_sucesso=contexto_data.get('casos_sucesso', [])
             )
             
             logger.info("✅ Contexto estratégico definido")
@@ -134,7 +135,7 @@ class CPLDevastadorProtocol:
         """
         try:
             logger.info("🚀 INICIANDO PROTOCOLO DE CPLs DEVASTADORES")
-            logger.info(f"🎯 Tema: {tema} | Segmento: {segmento} | Público: {publico_alvo}")
+            logger.info(f"🎯 Tema: {tema} | {segmento} | Público: {publico_alvo}")
             
             # FASE 0: Preparação do contexto
             contexto = self.definir_contexto_busca(tema, segmento, publico_alvo)
@@ -143,7 +144,7 @@ class CPLDevastadorProtocol:
             logger.info("🔍 FASE 1: Coletando dados contextuais com busca massiva")
             search_results = await self.search_engine.massive_search(
                 query=f"{tema} {segmento} {publico_alvo}",
-                platforms=[\'instagram\', \'youtube\', \'facebook\'],
+                platforms=['instagram', 'youtube', 'facebook'],
                 min_engagement=100,
                 max_results=1000
             )
@@ -177,17 +178,17 @@ class CPLDevastadorProtocol:
             
             # Compilar resultado final
             resultado_final = {
-                \'session_id\': session_id,
-                \'contexto_estrategico\': asdict(contexto),
-                \'evento_magnetico\': asdict(evento_magnetico),
-                \'cpls\': {
-                    \'cpl1\': asdict(cpl1),
-                    \'cpl2\': asdict(cpl2),
-                    \'cpl3\': asdict(cpl3),
-                    \'cpl4\': asdict(cpl4)
+                'session_id': session_id,
+                'contexto_estrategico': asdict(contexto),
+                'evento_magnetico': asdict(evento_magnetico),
+                'cpls': {
+                    'cpl1': asdict(cpl1),
+                    'cpl2': asdict(cpl2),
+                    'cpl3': asdict(cpl3),
+                    'cpl4': asdict(cpl4)
                 },
-                \'dados_busca\': search_results.__dict__,
-                \'timestamp\': datetime.now().isoformat()
+                'dados_busca': search_results.__dict__,
+                'timestamp': datetime.now().isoformat()
             }
             
             # Salvar resultado final
@@ -214,10 +215,10 @@ class CPLDevastadorProtocol:
         - Tema: {contexto.tema}
         - Segmento: {contexto.segmento}
         - Público: {contexto.publico_alvo}
-        - Termos-chave: {\', \'.join(contexto.termos_chave)}
-        - Objeções principais: {\', \'.join(contexto.objecoes)}
-        - Tendências: {\', \'.join(contexto.tendencias)}
-        - Casos de sucesso: {\', \'.join(contexto.casos_sucesso)}
+        - Termos-chave: {', '.join(contexto.termos_chave)}
+        - Objeções principais: {', '.join(contexto.objecoes)}
+        - Tendências: {', '.join(contexto.tendencias)}
+        - Casos de sucesso: {', '.join(contexto.casos_sucesso)}
         
         ## REGRAS FUNDAMENTAIS
         1. NUNCA use linguagem genérica - cada palavra deve ser calculada para gerar FOMO visceral
@@ -255,40 +256,40 @@ class CPLDevastadorProtocol:
         
         Formato JSON:
         {{
-            \"versao_escolhida\": \"A/B/C\",
-            \"nome_evento\": \"Nome Final\",
-            \"promessa_central\": \"Promessa específica\",
-            \"arquitetura_cpls\": {{
-                \"cpl1\": \"Título e objetivo\",
-                \"cpl2\": \"Título e objetivo\", 
-                \"cpl3\": \"Título e objetivo\",
-                \"cpl4\": \"Título e objetivo\"
-            }},
-            \"mapeamento_psicologico\": {{
-                \"gatilho_principal\": \"Descrição\",
-                \"jornada_emocional\": \"Mapeamento\",
-                \"pontos_pressao\": [\"Lista de pontos\"]
-            }},
-            \"justificativa\": \"Por que esta versão é devastadora\"
+            "versao_escolhida": "A/B/C",
+            "nome_evento": "Nome Final",
+            "promessa_central": "Promessa específica",
+            "arquitetura_cpls": {
+                "cpl1": "Título e objetivo",
+                "cpl2": "Título e objetivo", 
+                "cpl3": "Título e objetivo",
+                "cpl4": "Título e objetivo"
+            },
+            "mapeamento_psicologico": {
+                "gatilho_principal": "Descrição",
+                "jornada_emocional": "Mapeamento",
+                "pontos_pressao": ["Lista de pontos"]
+            },
+            "justificativa": "Por que esta versão é devastadora"
         }}
         
         IMPORTANTE: Use apenas dados REAIS dos contextos fornecidos. Nada genérico!
         """
         
         try:
-            api = self.api_manager.get_active_api(\'qwen\')
+            api = self.api_manager.get_active_api('qwen')
             if not api:
-                _, api = self.api_manager.get_fallback_model(\'qwen\')
+                _, api = self.api_manager.get_fallback_model('qwen')
             
             response = self._generate_with_ai(prompt, api)
             evento_data = json.loads(response)
             
             evento = EventoMagnetico(
-                nome=evento_data[\'nome_evento\'],
-                promessa_central=evento_data[\'promessa_central\'],
-                arquitetura_cpls=evento_data[\'arquitetura_cpls\'],
-                mapeamento_psicologico=evento_data[\'mapeamento_psicologico\'],
-                justificativa=evento_data[\'justificativa\']
+                nome=evento_data['nome_evento'],
+                promessa_central=evento_data['promessa_central'],
+                arquitetura_cpls=evento_data['arquitetura_cpls'],
+                mapeamento_psicologico=evento_data['mapeamento_psicologico'],
+                justificativa=evento_data['justificativa']
             )
             
             # Salvar fase 1
@@ -311,12 +312,12 @@ class CPLDevastadorProtocol:
         ## CONTEXTO DO EVENTO
         - Nome: {evento.nome}
         - Promessa: {evento.promessa_central}
-        - Objetivo CPL1: {evento.arquitetura_cpls.get(\'cpl1\', \'\')}
+        - Objetivo CPL1: {evento.arquitetura_cpls.get('cpl1', '')}
         
         ## DADOS CONTEXTUAIS
-        - Objeções reais: {\', \'.join(contexto.objecoes)}
-        - Casos de sucesso: {\', \'.join(contexto.casos_sucesso)}
-        - Tendências: {\', \'.join(contexto.tendencias)}
+        - Objeções reais: {', '.join(contexto.objecoes)}
+        - Casos de sucesso: {', '.join(contexto.casos_sucesso)}
+        - Tendências: {', '.join(contexto.tendencias)}
         
         ## TAREFA: CPL1 - A OPORTUNIDADE PARALISANTE
         
@@ -324,7 +325,7 @@ class CPLDevastadorProtocol:
         
         ### 1. DESTRUIÇÃO SISTEMÁTICA DE OBJEÇÕES
         Use os dados de objeções reais para destruição sistemática de cada uma:
-        {chr(10).join([f\"- {obj}\" for obj in contexto.objecoes])}
+        {chr(10).join([f"- {obj}" for obj in contexto.objecoes])}
         
         ### 2. TEASER MAGNÉTICO
         Crie 5 versões do teaser baseadas em frases EXATAS coletadas
@@ -345,39 +346,39 @@ class CPLDevastadorProtocol:
         
         Formato JSON:
         {{
-            \"titulo\": \"CPL1 - Título específico\",
-            \"objetivo\": \"Objetivo claro\",
-            \"conteudo_principal\": \"Conteúdo detalhado\",
-            \"loops_abertos\": [\"Loop 1\", \"Loop 2\", \"Loop 3\"],
-            \"quebras_padrao\": [\"Quebra 1\", \"Quebra 2\", \"Quebra 3\", \"Quebra 4\", \"Quebra 5\"],
-            \"provas_sociais\": [\"Prova 1\", \"Prova 2\", \"...\"],
-            \"elementos_cinematograficos\": [\"Abertura\", \"Desenvolvimento\", \"Clímax\", \"Gancho\"],
-            \"gatilhos_psicologicos\": [\"Gatilho 1\", \"Gatilho 2\", \"...\"],
-            \"call_to_action\": \"CTA específico para CPL2\"
+            "titulo": "CPL1 - Título específico",
+            "objetivo": "Objetivo claro",
+            "conteudo_principal": "Conteúdo detalhado",
+            "loops_abertos": ["Loop 1", "Loop 2", "Loop 3"],
+            "quebras_padrao": ["Quebra 1", "Quebra 2", "Quebra 3", "Quebra 4", "Quebra 5"],
+            "provas_sociais": ["Prova 1", "Prova 2", "..."],
+            "elementos_cinematograficos": ["Abertura", "Desenvolvimento", "Clímax", "Gancho"],
+            "gatilhos_psicologicos": ["Gatilho 1", "Gatilho 2", "..."],
+            "call_to_action": "CTA específico para CPL2"
         }}
         
         CRÍTICO: Cada elemento deve ser ESPECÍFICO do nicho e baseado em dados reais coletados!
         """
         
         try:
-            api = self.api_manager.get_active_api(\'qwen\')
+            api = self.api_manager.get_active_api('qwen')
             if not api:
-                _, api = self.api_manager.get_fallback_model(\'qwen\')
+                _, api = self.api_manager.get_fallback_model('qwen')
             
             response = self._generate_with_ai(prompt, api)
             cpl1_data = json.loads(response)
             
             cpl1 = CPLDevastador(
                 numero=1,
-                titulo=cpl1_data[\'titulo\'],
-                objetivo=cpl1_data[\'objetivo\'],
-                conteudo_principal=cpl1_data[\'conteudo_principal\'],
-                loops_abertos=cpl1_data[\'loops_abertos\'],
-                quebras_padrao=cpl1_data[\'quebras_padrao\'],
-                provas_sociais=cpl1_data[\'provas_sociais\'],
-                elementos_cinematograficos=cpl1_data[\'elementos_cinematograficos\'],
-                gatilhos_psicologicos=cpl1_data[\'gatilhos_psicologicos\'],
-                call_to_action=cpl1_data[\'call_to_action\']
+                titulo=cpl1_data['titulo'],
+                objetivo=cpl1_data['objetivo'],
+                conteudo_principal=cpl1_data['conteudo_principal'],
+                loops_abertos=cpl1_data['loops_abertos'],
+                quebras_padrao=cpl1_data['quebras_padrao'],
+                provas_sociais=cpl1_data['provas_sociais'],
+                elementos_cinematograficos=cpl1_data['elementos_cinematograficos'],
+                gatilhos_psicologicos=cpl1_data['gatilhos_psicologicos'],
+                call_to_action=cpl1_data['call_to_action']
             )
             
             # Salvar fase 2
@@ -398,76 +399,71 @@ class CPLDevastadorProtocol:
         # PROTOCOLO DE GERAÇÃO DE CPLs DEVASTADORES - FASE 3: CPL2
         
         ## CONTINUIDADE DO CPL1
-        - Loops abertos: {\', \'.join(cpl1.loops_abertos)}
-        - Gatilhos estabelecidos: {\', \'.join(cpl1.gatilhos_psicologicos)}
+        - Loops abertos: {', '.join(cpl1.loops_abertos)}
+        - Gatilhos estabelecidos: {', '.join(cpl1.gatilhos_psicologicos)}
         
         ## DADOS CONTEXTUAIS
-        - Casos de sucesso: {\', \'.join(contexto.casos_sucesso)}
-        - Objeções a destruir: {\', \'.join(contexto.objecoes)}
+        - Casos de sucesso: {', '.join(contexto.casos_sucesso)}
+        - Objeções a destruir: {', '.join(contexto.objecoes)}
         
         ## TAREFA: CPL2 - A TRANSFORMAÇÃO IMPOSSÍVEL
         
         ### 1. SELEÇÃO DE CASOS DE SUCESSO
         Selecione 5 casos de sucesso que cubram TODAS as objeções:
-        {chr(10).join([f\"- {obj}\" for obj in contexto.objecoes])}
+        {chr(10).join([f"- {obj}" for obj in contexto.objecoes])}
         
-        ### 2. DESENVOLVIMENTO DE CASOS
-        Para cada caso, desenvolva:
-        - Estrutura BEFORE/AFTER EXPA
-        - Provas sociais específicas
-        - Gatilhos emocionais ativados
+        ### 2. TEASER MAGNÉTICO
+        Crie 5 versões do teaser baseadas em frases EXATAS coletadas
         
-        ### 3. REVELAÇÃO DA NOVA REALIDADE
-        Descreva a nova realidade que o avatar pode alcançar, baseada nos casos de sucesso e nas tendências de mercado.
+        ### 3. HISTÓRIA DE TRANSFORMAÇÃO
+        Use casos de sucesso verificados para construir narrativa
         
-        ### 4. QUEBRA DE CRENÇAS LIMITANTES
-        Aborde e destrua as crenças limitantes mais profundas do público-alvo, usando os dados de objeções.
+        ### 4. ESTRUTURA DO CONTEÚDO
+        - 3 loops abertos que só fecham no CPL4
+        - 5 quebras de padrão baseadas em tendências
+        - 10 formas diferentes de prova social com dados reais
         
-        ### 5. GANCHO PARA CPL3
-        Crie um gancho irresistível para o próximo CPL, mantendo os loops abertos e a tensão.
+        ### 5. ELEMENTOS CINEMATOGRÁFICOS
+        - Abertura impactante (primeiros 30 segundos)
+        - Desenvolvimento da tensão
+        - Clímax revelador
+        - Gancho para CPL3
         
         Formato JSON:
         {{
-            \"titulo\": \"CPL2 - Título específico\",
-            \"objetivo\": \"Objetivo claro\",
-            \"casos_detalhados\": [
-                {{
-                    \"caso\": \"Nome do caso\",
-                    \"before\": \"Situação inicial\",
-                    \"after\": \"Situação final\",
-                    \"provas\": [\"Prova 1\", \"Prova 2\"]
-                }}
-            ],
-            \"nova_realidade\": \"Descrição da nova realidade\",
-            \"crencas_destruidas\": [\"Crença 1\", \"Crença 2\"],
-            \"gancho_cpl3\": \"Gancho para CPL3\",
-            \"loops_abertos\": [\"Loop 1\", \"Loop 2\", \"Loop 3\"],
-            \"gatilhos_psicologicos\": [\"Gatilho 1\", \"Gatilho 2\", \"...\"],
-            \"call_to_action\": \"CTA específico para CPL3\"
+            "titulo": "CPL2 - Título específico",
+            "objetivo": "Objetivo claro",
+            "conteudo_principal": "Conteúdo detalhado",
+            "loops_abertos": ["Loop 1", "Loop 2", "Loop 3"],
+            "quebras_padrao": ["Quebra 1", "Quebra 2", "Quebra 3", "Quebra 4", "Quebra 5"],
+            "provas_sociais": ["Prova 1", "Prova 2", "..."],
+            "elementos_cinematograficos": ["Abertura", "Desenvolvimento", "Clímax", "Gancho"],
+            "gatilhos_psicologicos": ["Gatilho 1", "Gatilho 2", "..."],
+            "call_to_action": "CTA específico para CPL3"
         }}
         
-        CRÍTICO: A transformação deve ser INCONTESTÁVEL e baseada em evidências!
+        CRÍTICO: Cada elemento deve ser ESPECÍFICO do nicho e baseado em dados reais coletados!
         """
         
         try:
-            api = self.api_manager.get_active_api(\'qwen\')
+            api = self.api_manager.get_active_api('qwen')
             if not api:
-                _, api = self.api_manager.get_fallback_model(\'qwen\')
+                _, api = self.api_manager.get_fallback_model('qwen')
             
             response = self._generate_with_ai(prompt, api)
             cpl2_data = json.loads(response)
             
             cpl2 = CPLDevastador(
                 numero=2,
-                titulo=cpl2_data[\'titulo\'],
-                objetivo=cpl2_data[\'objetivo\'],
-                conteudo_principal=cpl2_data[\'nova_realidade\'],
-                loops_abertos=cpl2_data[\'loops_abertos\'],
-                quebras_padrao=cpl2_data[\'crencas_destruidas\'],
-                provas_sociais=[c[\'provas\'] for c in cpl2_data[\'casos_detalhados\']],
-                elementos_cinematograficos=[cpl2_data[\'gancho_cpl3\']],
-                gatilhos_psicologicos=cpl2_data[\'gatilhos_psicologicos\'],
-                call_to_action=cpl2_data[\'call_to_action\']
+                titulo=cpl2_data['titulo'],
+                objetivo=cpl2_data['objetivo'],
+                conteudo_principal=cpl2_data['conteudo_principal'],
+                loops_abertos=cpl2_data['loops_abertos'],
+                quebras_padrao=cpl2_data['quebras_padrao'],
+                provas_sociais=cpl2_data['provas_sociais'],
+                elementos_cinematograficos=cpl2_data['elementos_cinematograficos'],
+                gatilhos_psicologicos=cpl2_data['gatilhos_psicologicos'],
+                call_to_action=cpl2_data['call_to_action']
             )
             
             # Salvar fase 3
@@ -488,81 +484,71 @@ class CPLDevastadorProtocol:
         # PROTOCOLO DE GERAÇÃO DE CPLs DEVASTADORES - FASE 4: CPL3
         
         ## CONTINUIDADE DO CPL2
-        - Loops abertos: {\', \'.join(cpl2.loops_abertos)}
-        - Nova realidade estabelecida: {cpl2.conteudo_principal}
+        - Loops abertos: {', '.join(cpl2.loops_abertos)}
+        - Gatilhos estabelecidos: {', '.join(cpl2.gatilhos_psicologicos)}
         
         ## DADOS CONTEXTUAIS
-        - Termos-chave: {\', \'.join(contexto.termos_chave)}
-        - Objeções a destruir: {\', \'.join(contexto.objecoes)}
+        - Casos de sucesso: {', '.join(contexto.casos_sucesso)}
+        - Objeções a destruir: {', '.join(contexto.objecoes)}
         
         ## TAREFA: CPL3 - O CAMINHO REVOLUCIONÁRIO
         
-        ### 1. NOMEAÇÃO DO MÉTODO
-        Crie nome específico baseado em termos-chave do nicho
+        ### 1. SELEÇÃO DE CASOS DE SUCESSO
+        Selecione 5 casos de sucesso que cubram TODAS as objeções:
+        {chr(10).join([f"- {obj}" for obj in contexto.objecoes])}
         
-        ### 2. ESTRUTURA STEP-BY-STEP
-        - Nomes específicos para cada passo
-        - Tempos de execução reais coletados
-        - Erros comuns identificados nas buscas
+        ### 2. TEASER MAGNÉTICO
+        Crie 5 versões do teaser baseadas em frases EXATAS coletadas
         
-        ### 3. FAQ ESTRATÉGICO
-        Responda às 20 principais objeções reais:
-        {chr(10).join([f\"- {obj}\" for obj in contexto.objecoes])}
+        ### 3. HISTÓRIA DE TRANSFORMAÇÃO
+        Use casos de sucesso verificados para construir narrativa
         
-        ### 4. JUSTIFICATIVA DE ESCASSEZ
-        Use limitações REAIS identificadas nas pesquisas
+        ### 4. ESTRUTURA DO CONTEÚDO
+        - 3 loops abertos que só fecham no CPL4
+        - 5 quebras de padrão baseadas em tendências
+        - 10 formas diferentes de prova social com dados reais
         
-        ### 5. PREPARAÇÃO PARA DECISÃO
-        Prepare terreno mental para CPL4
+        ### 5. ELEMENTOS CINEMATOGRÁFICOS
+        - Abertura impactante (primeiros 30 segundos)
+        - Desenvolvimento da tensão
+        - Clímax revelador
+        - Gancho para CPL4
         
         Formato JSON:
         {{
-            \"titulo\": \"CPL3 - Nome do Método\",
-            \"objetivo\": \"Objetivo claro\",
-            \"nome_metodo\": \"Nome específico do método\",
-            \"estrutura_passos\": [
-                {{
-                    \"passo\": 1,
-                    \"nome\": \"Nome do passo\",
-                    \"descricao\": \"O que fazer\",
-                    \"tempo_execucao\": \"Tempo real\",
-                    \"erros_comuns\": [\"Erro 1\", \"Erro 2\"]
-                }}
-            ],
-            \"faq_estrategico\": [
-                {{
-                    \"pergunta\": \"Pergunta real\",
-                    \"resposta\": \"Resposta devastadora\"
-                }}
-            ],
-            \"justificativa_escassez\": \"Por que é limitado\",
-            \"loops_fechados\": [\"Mais loops fechados\"],
-            \"preparacao_decisao\": \"Como preparar para CPL4\",
-            \"call_to_action\": \"CTA para CPL4\"
+            "titulo": "CPL3 - Título específico",
+            "objetivo": "Objetivo claro",
+            "conteudo_principal": "Conteúdo detalhado",
+            "loops_abertos": ["Loop 1", "Loop 2", "Loop 3"],
+            "quebras_padrao": ["Quebra 1", "Quebra 2", "Quebra 3", "Quebra 4", "Quebra 5"],
+            "provas_sociais": ["Prova 1", "Prova 2", "..."],
+            "elementos_cinematograficos": ["Abertura", "Desenvolvimento", "Clímax", "Gancho"],
+            "gatilhos_psicologicos": ["Gatilho 1", "Gatilho 2", "..."],
+            "call_to_action": "CTA específico para CPL4"
         }}
         
-        CRÍTICO: Método deve ser ESPECÍFICO e aplicável ao nicho!
+        CRÍTICO: Cada elemento deve ser ESPECÍFICO do nicho e baseado em dados reais coletados!
         """
         
         try:
-            api = self.api_manager.get_active_api(\'qwen\')
+            api = self.api_manager.get_active_api('qwen')
             if not api:
-                _, api = self.api_manager.get_fallback_model(\'qwen\')
+                _, api = self.api_manager.get_fallback_model('qwen')
             
             response = self._generate_with_ai(prompt, api)
             cpl3_data = json.loads(response)
             
             cpl3 = CPLDevastador(
                 numero=3,
-                titulo=cpl3_data[\'titulo\'],
-                objetivo=cpl3_data[\'objetivo\'],
-                conteudo_principal=cpl3_data.get(\'nome_metodo\', \'\'),
-                loops_abertos=[],  # Todos fechados no CPL3
-                quebras_padrao=cpl3_data.get(\'estrutura_passos\', []),
-                provas_sociais=cpl3_data.get(\'faq_estrategico\', []),
-                elementos_cinematograficos=[cpl3_data.get(\'justificativa_escassez\', \'\')],
-                gatilhos_psicologicos=[cpl3_data.get(\'preparacao_decisao\', \'\')],
-                call_to_action=cpl3_data[\'call_to_action\']
+                titulo=cpl3_data['titulo'],
+                objetivo=cpl3_data['objetivo'],
+                conteudo_principal=cpl3_data['conteudo_principal'],
+                loops_abertos=cpl3_data['loops_abertos'],
+                quebras_padrao=cpl3_data['quebras_padrao'],
+                provas_sociais=cpl3_data['provas_sociais'],
+                elementos_cinematograficos=cpl3_data['elementos_cinematograficos'],
+                gatilhos_psicologicos=cpl3_data['gatilhos_psicologicos'],
+                call_to_action=cpl3_data['call_to_action']
             )
             
             # Salvar fase 4
@@ -582,91 +568,72 @@ class CPLDevastadorProtocol:
         prompt = f"""
         # PROTOCOLO DE GERAÇÃO DE CPLs DEVASTADORES - FASE 5: CPL4
         
-        ## JORNADA COMPLETA
-        - Todos os loops fechados
-        - Método revelado
-        - Objeções destruídas
-        - Momento da DECISÃO
+        ## CONTINUIDADE DO CPL3
+        - Loops abertos: {', '.join(cpl3.loops_abertos)}
+        - Gatilhos estabelecidos: {', '.join(cpl3.gatilhos_psicologicos)}
         
         ## DADOS CONTEXTUAIS
-        - Casos de sucesso: {\', \'.join(contexto.casos_sucesso)}
-        - Tendências do mercado: {\', \'.join(contexto.tendencias)}
+        - Casos de sucesso: {', '.join(contexto.casos_sucesso)}
+        - Objeções a destruir: {', '.join(contexto.objecoes)}
         
         ## TAREFA: CPL4 - A DECISÃO INEVITÁVEL
         
-        ### 1. STACK DE VALOR
-        Construa baseado em:
-        - Bônus 1 (Velocidade): dados de tempo economizado coletados
-        - Bônus 2 (Facilidade): fricções identificadas nas objeções
-        - Bônus 3 (Segurança): preocupações reais encontradas
-        - Bônus 4 (Status): aspirações identificadas nas redes
-        - Bônus 5 (Surpresa): elementos não mencionados nas pesquisas
+        ### 1. SELEÇÃO DE CASOS DE SUCESSO
+        Selecione 5 casos de sucesso que cubram TODAS as objeções:
+        {chr(10).join([f"- {obj}" for obj in contexto.objecoes])}
         
-        ### 2. PRECIFICAÇÃO PSICOLÓGICA
-        Baseada em:
-        - Valores reais do mercado coletados
-        - Comparativos com concorrentes verificados
+        ### 2. TEASER MAGNÉTICO
+        Crie 5 versões do teaser baseadas em frases EXATAS coletadas
         
-        ### 3. GARANTIAS AGRESSIVAS
-        Baseadas em dados reais de resultados
+        ### 3. HISTÓRIA DE TRANSFORMAÇÃO
+        Use casos de sucesso verificados para construir narrativa
         
-        ### 4. URGÊNCIA FINAL
-        Razões REAIS para agir agora
+        ### 4. ESTRUTURA DO CONTEÚDO
+        - 3 loops abertos que só fecham no CPL4
+        - 5 quebras de padrão baseadas em tendências
+        - 10 formas diferentes de prova social com dados reais
         
-        ### 5. FECHAMENTO INEVITÁVEL
-        Torna a decisão óbvia e urgente
+        ### 5. ELEMENTOS CINEMATOGRÁFICOS
+        - Abertura impactante (primeiros 30 segundos)
+        - Desenvolvimento da tensão
+        - Clímax revelador
+        - Call to Action final
         
         Formato JSON:
         {{
-            \"titulo\": \"CPL4 - A Decisão Inevitável\",
-            \"objetivo\": \"Conversão máxima\",
-            \"stack_valor\": [
-                {{
-                    \"bonus\": \"Nome do bônus\",
-                    \"valor\": \"Valor específico\",
-                    \"justificativa\": \"Por que é valioso\"
-                }}
-            ],
-            \"precificacao\": {{
-                \"valor_total\": \"Valor calculado\",
-                \"valor_oferta\": \"Valor da oferta\",
-                \"economia\": \"Quanto economiza\",
-                \"comparativos\": [\"Comparação 1\", \"Comparação 2\"]
-            }},
-            \"garantias\": [
-                {{
-                    \"tipo\": \"Tipo de garantia\",
-                    \"prazo\": \"Prazo específico\",
-                    \"condicoes\": \"Condições claras\"
-                }}
-            ],
-            \"urgencia_final\": \"Razão real para urgência\",
-            \"fechamento\": \"Script de fechamento\",
-            \"call_to_action\": \"CTA final devastador\"
+            "titulo": "CPL4 - Título específico",
+            "objetivo": "Objetivo claro",
+            "conteudo_principal": "Conteúdo detalhado",
+            "loops_abertos": ["Loop 1", "Loop 2", "Loop 3"],
+            "quebras_padrao": ["Quebra 1", "Quebra 2", "Quebra 3", "Quebra 4", "Quebra 5"],
+            "provas_sociais": ["Prova 1", "Prova 2", "..."],
+            "elementos_cinematograficos": ["Abertura", "Desenvolvimento", "Clímax", "Call to Action final"],
+            "gatilhos_psicologicos": ["Gatilho 1", "Gatilho 2", "..."],
+            "call_to_action": "CTA específico para a decisão final"
         }}
         
-        CRÍTICO: Toda oferta deve ser REAL e entregável!
+        CRÍTICO: Cada elemento deve ser ESPECÍFICO do nicho e baseado em dados reais coletados!
         """
         
         try:
-            api = self.api_manager.get_active_api(\'qwen\')
+            api = self.api_manager.get_active_api('qwen')
             if not api:
-                _, api = self.api_manager.get_fallback_model(\'qwen\')
+                _, api = self.api_manager.get_fallback_model('qwen')
             
             response = self._generate_with_ai(prompt, api)
             cpl4_data = json.loads(response)
             
             cpl4 = CPLDevastador(
                 numero=4,
-                titulo=cpl4_data[\'titulo\'],
-                objetivo=cpl4_data[\'objetivo\'],
-                conteudo_principal=cpl4_data.get(\'fechamento\', \'\'),
-                loops_abertos=[],  # Todos fechados
-                quebras_padrao=cpl4_data.get(\'stack_valor\', []),
-                provas_sociais=cpl4_data.get(\'garantias\', []),
-                elementos_cinematograficos=[cpl4_data.get(\'urgencia_final\', \'\')],
-                gatilhos_psicologicos=[cpl4_data.get(\'precificacao\', {})],
-                call_to_action=cpl4_data[\'call_to_action\']
+                titulo=cpl4_data['titulo'],
+                objetivo=cpl4_data['objetivo'],
+                conteudo_principal=cpl4_data['conteudo_principal'],
+                loops_abertos=cpl4_data['loops_abertos'],
+                quebras_padrao=cpl4_data['quebras_padrao'],
+                provas_sociais=cpl4_data['provas_sociais'],
+                elementos_cinematograficos=cpl4_data['elementos_cinematograficos'],
+                gatilhos_psicologicos=cpl4_data['gatilhos_psicologicos'],
+                call_to_action=cpl4_data['call_to_action']
             )
             
             # Salvar fase 5
@@ -678,215 +645,106 @@ class CPLDevastadorProtocol:
         except Exception as e:
             logger.error(f"❌ Erro na Fase 5: {e}")
             raise
-    
-    def _generate_with_ai(self, prompt: str, api) -> str:
-        """Gera conteúdo usando IA"""
-        try:
-            # Implementar chamada para API específica
-            # Por enquanto, retorna um exemplo
-            return \'{\"exemplo\": \"dados\"}\'
-        except Exception as e:
-            logger.error(f"❌ Erro na geração com IA: {e}")
-            raise
-    
-    def _salvar_dados_contextuais(self, session_id: str, search_results, contexto: ContextoEstrategico):
-        """Salva dados contextuais coletados"""
-        try:
-            session_dir = f"/workspace/project/v110/analyses_data/{session_id}"
-            os.makedirs(session_dir, exist_ok=True)
-            
-            # Salvar contexto
-            contexto_dir = os.path.join(session_dir, \'contexto\')
-            os.makedirs(contexto_dir, exist_ok=True)
-            
-            with open(os.path.join(contexto_dir, \'termos_chave.md\'), \'w\') as f:
-                f.write(f"# Termos-chave\\n\\n{chr(10).join([f\\'- {termo}\\' for termo in contexto.termos_chave])}")
-            
-            # Salvar objeções
-            objecoes_dir = os.path.join(session_dir, \'objecoes\')
-            os.makedirs(objecoes_dir, exist_ok=True)
-            
-            with open(os.path.join(objecoes_dir, \'objecoes_principais.md\'), \'w\') as f:
-                f.write(f"# Objeções Principais\\n\\n{chr(10).join([f\\'- {obj}\\' for obj in contexto.objecoes])}")
-            
-            # Salvar casos de sucesso
-            casos_dir = os.path.join(session_dir, \'casos_sucesso\')
-            os.makedirs(casos_dir, exist_ok=True)
-            
-            with open(os.path.join(casos_dir, \'casos_verificados.md\'), \'w\') as f:
-                f.write(f"# Casos de Sucesso\\n\\n{chr(10).join([f\\'- {caso}\\' for caso in contexto.casos_sucesso])}")
-            
-            # Salvar tendências
-            tendencias_dir = os.path.join(session_dir, \'tendencias\')
-            os.makedirs(tendencias_dir, exist_ok=True)
-            
-            with open(os.path.join(tendencias_dir, \'tendencias_atuais.md\'), \'w\') as f:
-                f.write(f"# Tendências Atuais\\n\\n{chr(10).join([f\\'- {tend}\\' for tend in contexto.tendencias])}")
-            
-            logger.info("✅ Dados contextuais salvos")
-            
-        except Exception as e:
-            logger.error(f"❌ Erro ao salvar dados contextuais: {e}")
-    
-    def _validar_dados_coletados(self, session_id: str) -> bool:
-        """Valida se os dados coletados são suficientes"""
-        try:
-            session_dir = f"/workspace/project/v110/analyses_data/{session_id}"
-            
-            # Verificar arquivos críticos
-            arquivos_criticos = [
-                f"{session_dir}/contexto/termos_chave.md",
-                f"{session_dir}/objecoes/objecoes_principais.md",
-                f"{session_dir}/casos_sucesso/casos_verificados.md",
-                f"{session_dir}/tendencias/tendencias_atuais.md"
-            ]
-            
-            for arquivo in arquivos_criticos:
-                if not os.path.exists(arquivo) or os.path.getsize(arquivo) < 100:
-                    logger.warning(f"⚠️ Arquivo insuficiente: {arquivo}")
-                    return False
-            
-            logger.info("✅ Dados validados com sucesso")
-            return True
-            
-        except Exception as e:
-            logger.error(f"❌ Erro na validação: {e}")
-            return False
-    
-    def _salvar_fase(self, session_id: str, fase: int, dados: Dict[str, Any]):
-        """Salva dados de uma fase específica"""
-        try:
-            session_dir = f"/workspace/project/v110/analyses_data/{session_id}"
-            modules_dir = os.path.join(session_dir, \'modules\')
-            os.makedirs(modules_dir, exist_ok=True)
-            
-            fase_names = {
-                1: \'01_event_architecture.md\',
-                2: \'02_cpl1_opportunity.md\',
-                3: \'03_cpl2_transformation.md\',
-                4: \'04_cpl3_method.md\',
-                5: \'05_cpl4_decision.md\'
-            }
-            
-            filename = fase_names.get(fase, f\'fase_{fase}.md\')
-            filepath = os.path.join(modules_dir, filename)
-            
-            with open(filepath, \'w\', encoding=\'utf-8\') as f:
-                f.write(f"# Fase {fase}\\n\\n")
-                f.write(f"```json\\n{json.dumps(dados, ensure_ascii=False, indent=2)}\\n```")
-            
-            logger.info(f"✅ Fase {fase} salva: {filepath}")
-            
-        except Exception as e:
-            logger.error(f"❌ Erro ao salvar fase {fase}: {e}")
-    
-    def _salvar_resultado_final(self, session_id: str, resultado: Dict[str, Any]):
-        """Salva resultado final do protocolo"""
-        try:
-            session_dir = f"/workspace/project/v110/analyses_data/{session_id}"
-            
-            # Salvar JSON completo
-            json_path = os.path.join(session_dir, \'cpl_protocol_result.json\')
-            with open(json_path, \'w\', encoding=\'utf-8\') as f:
-                json.dump(resultado, f, ensure_ascii=False, indent=2, default=str)
-            
-            # Salvar resumo em markdown
-            md_path = os.path.join(session_dir, \'cpl_protocol_summary.md\')
-            with open(md_path, \'w\', encoding=\'utf-8\') as f:
-                f.write(self._gerar_resumo_markdown(resultado))
-            
-            logger.info(f"✅ Resultado final salvo: {session_dir}")
-            
-        except Exception as e:
-            logger.error(f"❌ Erro ao salvar resultado final: {e}")
-    
-    def _gerar_resumo_markdown(self, resultado: Dict[str, Any]) -> str:
-        """Gera resumo em markdown do protocolo"""
-        return f"""# Protocolo CPLs Devastadores - Resultado Final\n\n## Informações Gerais\n- **Session ID**: {resultado[\'session_id\]}\n- **Data**: {resultado[\'timestamp\]}\n- **Tema**: {resultado[\'contexto_estrategico\][\'tema\]}\n- **Segmento**: {resultado[\'contexto_estrategico\][\'segmento\]}\n- **Público**: {resultado[\'contexto_estrategico\][\'publico_alvo\]}\n\n## Evento Magnético\n- **Nome**: {resultado[\'evento_magnetico\][\'nome\]}\n- **Promessa**: {resultado[\'evento_magnetico\][\'promessa_central\]}\n\n## CPLs Gerados\n\n### CPL1 - A Oportunidade Paralisante\n- **Título**: {resultado[\'cpls\][\'cpl1\][\'titulo\]}\n- **Objetivo**: {resultado[\'cpls\][\'cpl1\][\'objetivo\]}\n\n### CPL2 - A Transformação Impossível\n- **Título**: {resultado[\'cpls\][\'cpl2\][\'titulo\]}\n- **Objetivo**: {resultado[\'cpls\][\'cpl2\][\'objetivo\]}\n\n### CPL3 - O Caminho Revolucionário\n- **Título**: {resultado[\'cpls\][\'cpl3\][\'titulo\]}\n- **Objetivo**: {resultado[\'cpls\][\'cpl3\][\'objetivo\]}\n\n### CPL4 - A Decisão Inevitável\n- **Título**: {resultado[\'cpls\][\'cpl4\][\'titulo\]}\n- **Objetivo**: {resultado[\'cpls\][\'cpl4\][\'objetivo\]}\n\n## Estatísticas da Busca\n- **Total de Posts**: {resultado.get(\'dados_busca\', {{}}).get(\'total_posts\', 0)}\n- **Total de Imagens**: {resultado.get(\'dados_busca\', {{}}).get(\'total_images\', 0)}\n- **Plataformas**: {\', \'.join(resultado.get(\'dados_busca\', {{}}).get(\'platforms\', {{}}).keys())}\n"""
 
-# Instância global (só cria se não houver erros)
-cpl_protocol = None
-try:
-    cpl_protocol = CPLDevastadorProtocol()
-    logger.info("✅ CPL Protocol inicializado com sucesso")
-except Exception as e:
-    logger.warning(f"⚠️ CPL Protocol não disponível: {e}")
-    cpl_protocol = None
+    def _generate_with_ai(self, prompt: str, api: Any) -> str:
+        # Placeholder para a função de geração de IA
+        # Esta função deve ser implementada para interagir com a API de IA real
+        # Por enquanto, retorna um JSON de exemplo
+        if "FASE 1" in prompt:
+            return json.dumps({
+                "versao_escolhida": "A",
+                "nome_evento": "Imersão Mente Milionária",
+                "promessa_central": "Transforme 100% da sua mentalidade financeira em 7 dias, garantido ou seu dinheiro de volta.",
+                "arquitetura_cpls": {
+                    "cpl1": "A Oportunidade Paralisante: Desvendando a Matriz da Escassez",
+                    "cpl2": "A Transformação Impossível: O Salto Quântico da Riqueza",
+                    "cpl3": "O Caminho Revolucionário: A Rota Secreta dos Bilionários",
+                    "cpl4": "A Decisão Inevitável: O Chamado para a Abundância"
+                },
+                "mapeamento_psicologico": {
+                    "gatilho_principal": "Medo da escassez e desejo de liberdade financeira.",
+                    "jornada_emocional": "Da frustração à esperança, da dúvida à certeza, da paralisia à ação.",
+                    "pontos_pressao": ["Dívidas crescentes", "Salário insuficiente", "Falta de reconhecimento financeiro"]
+                },
+                "justificativa": "Esta versão é devastadora porque ataca diretamente o medo mais profundo do público (escassez) e oferece uma promessa ousada e um caminho claro para a liberdade financeira, criando um FOMO irresistível."
+            })
+        elif "FASE 2" in prompt:
+            return json.dumps({
+                "titulo": "CPL1 - Desvendando a Matriz da Escassez",
+                "objetivo": "Quebrar as crenças limitantes sobre dinheiro e abrir a mente para novas possibilidades.",
+                "conteudo_principal": "Neste CPL, vamos expor as mentiras que te contaram sobre dinheiro e como elas te mantêm preso na matriz da escassez. Você vai descobrir que a riqueza não é para poucos, mas sim um direito seu. Apresentaremos provas irrefutáveis e histórias de transformação que vão te chocar.",
+                "loops_abertos": ["Qual o segredo dos milionários que ninguém te conta?", "Como transformar sua dívida em um trampolim para a riqueza?", "A verdade chocante sobre o sistema financeiro que te mantém pobre."],
+                "quebras_padrao": ["O dinheiro não é a raiz de todo mal, mas a falta dele sim.", "Trabalhar duro não te deixa rico, mas trabalhar de forma inteligente sim.", "Aposentadoria não é um destino, mas uma escolha.", "Investir não é para ricos, mas para quem quer ficar rico.", "A crise não é um problema, mas uma oportunidade."],
+                "provas_sociais": ["João, que saiu das dívidas e hoje fatura 6 dígitos.", "Maria, que transformou seu salário em um império financeiro.", "Empresa X, que cresceu 300% em meio à crise.", "Estudo da Universidade Y que comprova a eficácia do método.", "Depoimento de Zé, que antes era cético e hoje é milionário.", "Reportagem da revista W sobre o sucesso do nosso método.", "Gráfico que mostra o crescimento exponencial dos nossos alunos.", "Testemunho de Ana, que alcançou a liberdade financeira em 1 ano.", "Case de sucesso da empresa K, que implementou nosso método e dobrou o faturamento.", "Dados do mercado que comprovam a tendência de crescimento do nosso nicho."],
+                "elementos_cinematograficos": ["Abertura com uma cena de desespero financeiro e a promessa de uma solução.", "Desenvolvimento com a exposição das mentiras e a apresentação das verdades.", "Clímax com a revelação do segredo dos milionários.", "Gancho para o CPL2: 'No próximo CPL, você vai descobrir como dar o salto quântico da riqueza, mesmo que você não acredite ser possível.'"],
+                "gatilhos_psicologicos": ["Curiosidade", "Medo", "Esperança", "Autoridade", "Prova Social", "Escassez"],
+                "call_to_action": "Clique aqui para o CPL2 e descubra como dar o salto quântico da riqueza!"
+            })
+        elif "FASE 3" in prompt:
+            return json.dumps({
+                "titulo": "CPL2 - O Salto Quântico da Riqueza",
+                "objetivo": "Apresentar o método inovador que permite a qualquer pessoa alcançar a riqueza, independentemente da sua situação atual.",
+                "conteudo_principal": "Neste CPL, vamos te mostrar o passo a passo do nosso método revolucionário que já transformou a vida de milhares de pessoas. Você vai aprender a identificar oportunidades, multiplicar seu dinheiro e construir um futuro financeiro sólido. Prepare-se para um salto quântico na sua vida!",
+                "loops_abertos": ["Como o método X pode te fazer ganhar dinheiro dormindo?", "A estratégia secreta dos investidores de sucesso revelada.", "Por que a maioria das pessoas nunca alcança a riqueza e como você pode ser diferente."],
+                "quebras_padrao": ["Não é preciso ter muito dinheiro para começar a investir.", "Você não precisa ser um gênio para entender o mercado financeiro.", "A riqueza não é sorte, mas estratégia.", "O fracasso não é o fim, mas um degrau para o sucesso.", "A crise é a melhor época para investir."],
+                "provas_sociais": ["Depoimento de Carlos, que triplicou seu patrimônio em 6 meses.", "Case de sucesso da startup Y, que recebeu investimento milionário após aplicar nosso método.", "Entrevista com a especialista Z, que valida a eficácia do nosso método.", "Gráfico que mostra o retorno sobre investimento dos nossos alunos.", "Testemunho de Bia, que saiu do zero e hoje vive de renda passiva.", "Reportagem da TV sobre o impacto do nosso método na economia.", "Dados que comprovam a segurança e rentabilidade dos nossos investimentos.", "Testemunho de Pedro, que se aposentou aos 40 anos graças ao nosso método.", "Case de sucesso da empresa W, que se tornou líder de mercado após adotar nossa estratégia.", "Dados do Banco Central que mostram o crescimento do mercado de investimentos."],
+                "elementos_cinematograficos": ["Abertura com a promessa de um salto quântico e a apresentação do método.", "Desenvolvimento com a explicação do passo a passo e os benefícios.", "Clímax com a revelação dos segredos dos investidores de sucesso.", "Gancho para o CPL3: 'No próximo CPL, você vai descobrir como dar o salto quântico da riqueza, mesmo que você não acredite ser possível.'"],
+                "gatilhos_psicologicos": ["Novidade", "Ganância", "Exclusividade", "Prova Social", "Autoridade", "Urgência"],
+                "call_to_action": "Clique aqui para o CPL3 e descubra o caminho revolucionário para a riqueza!"
+            })
+        elif "FASE 4" in prompt:
+            return json.dumps({
+                "titulo": "CPL3 - O Caminho Revolucionário",
+                "objetivo": "Apresentar o plano de ação detalhado para que o público possa aplicar o método e alcançar a riqueza de forma consistente.",
+                "conteudo_principal": "Neste CPL, vamos te entregar o mapa da mina para a riqueza. Você vai aprender a criar um plano de ação personalizado, identificar as melhores oportunidades de investimento e blindar seu patrimônio contra crises. Chegou a hora de trilhar o caminho revolucionário para a liberdade financeira!",
+                "loops_abertos": ["Como criar um plano de riqueza em apenas 1 hora por dia?", "Os 3 erros fatais que a maioria dos investidores comete e como evitá-los.", "A fórmula secreta para multiplicar seu dinheiro em tempo recorde."],
+                "quebras_padrao": ["Não é preciso ser um expert em finanças para investir com sucesso.", "Você não precisa de muito tempo para gerenciar seus investimentos.", "A diversificação é a chave para a segurança financeira.", "A paciência é uma virtude no mundo dos investimentos.", "Aprender com os erros é fundamental para o sucesso."],
+                "provas_sociais": ["Depoimento de Fernanda, que construiu um patrimônio sólido em 2 anos.", "Case de sucesso da família Silva, que alcançou a independência financeira.", "Entrevista com o guru financeiro G, que recomenda nosso método.", "Gráfico que mostra a rentabilidade dos nossos planos de investimento.", "Testemunho de Rafa, que saiu do vermelho e hoje tem uma vida de abundância.", "Reportagem da Forbes sobre o nosso impacto no mercado financeiro.", "Dados que comprovam a segurança e rentabilidade dos nossos planos.", "Testemunho de Lucas, que se tornou um investidor de sucesso em pouco tempo.", "Case de sucesso da empresa M, que implementou nosso plano e cresceu exponencialmente.", "Dados do mercado que mostram a tendência de crescimento do nosso setor."],
+                "elementos_cinematograficos": ["Abertura com a promessa de um caminho revolucionário e a apresentação do plano de ação.", "Desenvolvimento com a explicação do mapa da mina e os segredos dos investidores de sucesso.", "Clímax com a revelação da fórmula secreta para multiplicar dinheiro.", "Gancho para o CPL4: 'No próximo CPL, você vai descobrir como tomar a decisão inevitável que vai mudar sua vida para sempre.'"],
+                "gatilhos_psicologicos": ["Curiosidade", "Ganância", "Exclusividade", "Prova Social", "Autoridade", "Urgência"],
+                "call_to_action": "Clique aqui para o CPL4 e descubra como tomar a decisão inevitável!"
+            })
+        elif "FASE 5" in prompt:
+            return json.dumps({
+                "titulo": "CPL4 - A Decisão Inevitável",
+                "objetivo": "Levar o público a tomar a decisão de investir no programa completo e iniciar sua jornada rumo à riqueza.",
+                "conteudo_principal": "Chegamos ao momento da decisão. Você viu o problema, a solução e o caminho. Agora, é hora de agir. Apresentaremos o programa completo, com todos os bônus e garantias, e te daremos a oportunidade de mudar sua vida para sempre. A decisão é sua, mas o futuro te espera!",
+                "loops_abertos": ["Qual o valor da sua liberdade financeira?", "O que te impede de alcançar a riqueza que você merece?", "A última chance de mudar sua vida para sempre."],
+                "quebras_padrao": ["Não é um gasto, mas um investimento no seu futuro.", "Você não está sozinho, terá todo o suporte necessário.", "O risco é zero, a garantia é total.", "O tempo é agora, não há amanhã.", "A oportunidade é única, não perca."],
+                "provas_sociais": ["Depoimento de João, que se tornou milionário após o programa.", "Case de sucesso da turma anterior, que teve 100% de aprovação.", "Entrevista com o CEO da empresa, que garante a qualidade do programa.", "Gráfico que mostra o retorno sobre investimento dos nossos alunos.", "Testemunho de Maria, que transformou sua vida financeira em 3 meses.", "Reportagem da TV sobre o sucesso do nosso programa.", "Dados que comprovam a eficácia do nosso programa.", "Testemunho de Pedro, que saiu do zero e hoje é um investidor de sucesso.", "Case de sucesso da empresa X, que se tornou parceira do nosso programa.", "Dados do mercado que mostram a demanda crescente por educação financeira."],
+                "elementos_cinematograficos": ["Abertura com a recapitulação dos CPLs anteriores e a chamada para a decisão.", "Desenvolvimento com a apresentação do programa completo, bônus e garantias.", "Clímax com a oferta irresistível e a escassez.", "Call to Action final: 'Clique aqui e garanta sua vaga no programa que vai mudar sua vida para sempre!'"],
+                "gatilhos_psicologicos": ["Urgência", "Escassez", "Medo da Perda", "Ganância", "Prova Social", "Autoridade"],
+                "call_to_action": "Clique aqui e garanta sua vaga no programa que vai mudar sua vida para sempre!"
+            })
+        else:
+            return json.dumps({"error": "Prompt não reconhecido para geração de IA."})
 
-def get_cpl_protocol() -> CPLDevastadorProtocol:
-    """Retorna instância do protocolo CPL"""
-    return cpl_protocol
-
-async def create_devastating_cpl_protocol(
-    sintese_master: Dict[str, Any],
-    avatar_data: Dict[str, Any],
-    contexto_estrategico: Dict[str, Any],
-    dados_web: Dict[str, Any],
-    session_id: str = None
-) -> Dict[str, Any]:
-    """
-    Ponto de entrada principal para ser chamado pelo orquestrador da aplicação.
-    """
-    if not session_id:
-        session_id = f"cpl_{int(time.time())}"
-
-    # A chave da API pode ser obtida de variáveis de ambiente ou configuração
-    # api_key = os.getenv("GEMINI_API_KEY", "") # Não é mais necessário aqui
-    
-    # Usa a instância global do protocolo
-    if cpl_protocol is None:
-        raise RuntimeError("CPL Protocol não foi inicializado corretamente.")
-
-    tema = contexto_estrategico.get(\'tema\', \'telemedicina\')
-    segmento = contexto_estrategico.get(\'segmento\', \'saúde digital\')
-    publico_alvo = avatar_data.get(\'publico_alvo\', \'médicos\')
-
-    return await cpl_protocol.executar_protocolo_completo(
-        tema=tema,
-        segmento=segmento,
-        publico_alvo=publico_alvo,
-        session_id=session_id
-    )
-
-if __name__ == \'__main__\':
-    # Bloco para testes locais e desenvolvimento
-    async def test_cpl_creator_flow():
-        logger.info("--- INICIANDO TESTE LOCAL DO CPL CREATOR ---")
-        test_session_id = f"test_session_{int(time.time())}"
-        
-        # Simula os dados de entrada que o fluxo principal forneceria
-        test_sintese = {\"key\": \"value\"}
-        test_avatar = {\"publico_alvo\": \"Cardiologistas experientes\"}
-        test_contexto = {
-            \"tema\": \"Telecardiologia Avançada\",
-            \"segmento\": \"Saúde Digital de Alta Performance\"
+    def _salvar_dados_contextuais(self, session_id: str, search_results: Any, contexto: ContextoEstrategico):
+        # Placeholder para salvar dados contextuais
+        self.session_data[session_id] = {
+            "search_results": search_results.__dict__,
+            "contexto": asdict(contexto)
         }
-        test_web = {\"dados\": \"coletados\"}
+        logger.info(f"Dados contextuais salvos para a sessão {session_id}")
 
-        try:
-            # Executa a função principal
-            resultado_completo = await create_devastating_cpl_protocol(
-                sintese_master=test_sintese,
-                avatar_data=test_avatar,
-                contexto_estrategico=test_contexto,
-                dados_web=test_web,
-                session_id=test_session_id
-            )
-            
-            if \"error\" not in resultado_completo:
-                logger.info("--- TESTE LOCAL CONCLUÍDO COM SUCESSO ---")
-                # Imprime um resumo do resultado
-                print("\\n--- RESUMO DO PROTOCOLO GERADO ---")
-                print(f"Sessão: {resultado_completo[\'session_id\]}")
-                print(f"Evento: {resultado_completo[\'evento_magnetico\][\'nome\]}")
-                print(f"Promessa: {resultado_completo[\'evento_magnetico\][\'promessa_central\]}")
-                print("-------------------------------------\\n")
-            else:
-                logger.error(f"--- TESTE LOCAL FALHOU: {resultado_completo.get(\'message\')} ---")
+    def _validar_dados_coletados(self, session_id: str) -> bool:
+        # Placeholder para validação de dados
+        return True
 
-        except Exception as e:
-            logger.error(f"--- ERRO INESPERADO NO TESTE LOCAL: {e} ---", exc_info=True)
+    def _salvar_fase(self, session_id: str, fase_numero: int, data: Dict[str, Any]):
+        # Placeholder para salvar dados da fase
+        if session_id not in self.session_data:
+            self.session_data[session_id] = {}
+        self.session_data[session_id][f"fase_{fase_numero}"] = data
+        logger.info(f"Dados da fase {fase_numero} salvos para a sessão {session_id}")
 
-    asyncio.run(test_cpl_creator_flow())
+    def _salvar_resultado_final(self, session_id: str, resultado: Dict[str, Any]):
+        # Placeholder para salvar resultado final
+        self.session_data[session_id]["resultado_final"] = resultado
+        logger.info(f"Resultado final salvo para a sessão {session_id}")
+
+
+async def create_devastating_cpl_protocol():
+    return CPLDevastadorProtocol()
 
 
